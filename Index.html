@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Interactive 3D Bar Chart</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+</head>
+<body style="background-color: black;">
+    <a-scene>
+        <!-- Camera + Cursor for Desktop Browsing -->
+        <a-camera position="-5 4 12">
+            <a-cursor></a-cursor>
+        </a-camera>
+
+        <!-- Base for the bar chart -->
+        <a-plane position="-6 0 -4" rotation="-70 0 0" width="20" height="10" depth="50" color="#5ced73"></a-plane>
+        
+    </a-scene>
+
+    
+    <div id="tooltipBox" style="display: none; position: absolute; background-color: white; padding: 10px; z-index: 999;margin-left: 50%;"></div>
+
+
+    <script>
+        const matrixData = [
+            { date: "2023-11-01", value1: 8, value2: 5, value3: 4, value4: 2 },
+            { date: "2023-12-01", value1: 7, value2: 4, value3: 2, value4: 1 },
+            { date: "2024-01-01", value1: 11, value2: 8, value3: 5, value4: 3 },
+            { date: "2024-02-01", value1: 9, value2: 6, value3: 3, value4: 1 },
+            { date: "2024-03-01", value1: 10, value2: 7, value3: 5, value4: 2 },
+            { date: "2024-04-01", value1: 11, value2: 9, value3: 6, value4: 3 },
+            // Add more data as needed
+        ];
+
+        window.onload = function() {
+            const sceneEl = document.querySelector('a-scene'); // Get the scene
+
+            matrixData.forEach((item, index) => {
+                let xPos = index * -2.2; // Simple positioning, adjust as needed
+
+
+                // Create cylinder for value1
+                let cylinder1 = document.createElement('a-cylinder');
+                cylinder1.setAttribute('position', `${xPos} ${item.value1 / 2} -4`);
+                cylinder1.setAttribute('radius', "0.55");
+                cylinder1.setAttribute('height', `${item.value1}`);
+                cylinder1.setAttribute('color', "#474154");
+                cylinder1.setAttribute('class', 'interactive');
+                cylinder1.dataset.value = `${item.value1}`;
+                sceneEl.appendChild(cylinder1);
+
+                // Create cylinder for value2
+                let cylinder2 = document.createElement('a-cylinder');
+                cylinder2.setAttribute('position', `${xPos} ${item.value2 / 2} -2.5`); // Offset Z for visibility
+                cylinder2.setAttribute('height', `${item.value2}`);
+                cylinder2.setAttribute('radius', "0.55");
+                cylinder2.setAttribute('color', "#7C7294");
+                cylinder2.setAttribute('class', 'interactive');
+                cylinder2.dataset.value = `${item.value2}`;
+                sceneEl.appendChild(cylinder2);
+
+                // Create cylinder for value3
+                let cylinder3 = document.createElement('a-cylinder');
+                cylinder3.setAttribute('position', `${xPos} ${item.value3 / 2} -1.5`); // Offset Z for visibility
+                cylinder3.setAttribute('height', `${item.value3}`);
+                cylinder3.setAttribute('radius', "0.55");
+                cylinder3.setAttribute('color', "#BCADE0");
+                cylinder3.setAttribute('class', 'interactive');
+                cylinder3.dataset.value = `${item.value3}`;
+                sceneEl.appendChild(cylinder3);
+
+                // Create cylinder for value4
+                let cylinder4 = document.createElement('a-cylinder');
+                cylinder4.setAttribute('position', `${xPos} ${item.value4 / 2} -.5`); // Offset Z for visibility
+                cylinder4.setAttribute('height', `${item.value4}`);
+                cylinder4.setAttribute('radius', "0.55");
+                cylinder4.setAttribute('color', "#FFFFFF");
+                cylinder4.setAttribute('class', 'interactive');
+                cylinder4.dataset.value = `${item.value4}`;
+                sceneEl.appendChild(cylinder4);
+
+                // Create text for date
+                let dateText = document.createElement('a-text');
+                dateText.setAttribute('position', `${xPos} -.2 -.1`); // Adjust Y and Z position as needed
+                dateText.setAttribute('value', `${item.date}`);
+                dateText.setAttribute('color', '#000');
+                sceneEl.appendChild(dateText);
+            });
+
+        
+        document.querySelectorAll('.interactive').forEach(el => {
+    let originalColor = el.getAttribute('color');
+    el.addEventListener('mouseenter', function () {
+        el.setAttribute('color', '#878276'); // Change color on hover
+        let value = this.dataset.value;
+        showTooltip(value, el.getAttribute('position'));
+    });
+
+    el.addEventListener('mouseleave', function () {
+        el.setAttribute('color', originalColor); // Restore original color
+        hideTooltip();
+    });
+});
+
+function showTooltip(value, position) {
+    let tooltipBox = document.getElementById('tooltipBox');
+    tooltipBox.textContent = `Data: ${value}`;
+    tooltipBox.style.left = position.x + 'px';
+    tooltipBox.style.top = (position.y + 2) + 'px';
+    tooltipBox.style.display = 'block';
+}
+
+function hideTooltip() {
+    let tooltipBox = document.getElementById('tooltipBox');
+    tooltipBox.style.display = 'none';
+} 
+        
+}
+    </script>
+</body>
+</html>
